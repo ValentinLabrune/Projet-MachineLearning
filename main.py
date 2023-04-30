@@ -5,5 +5,4 @@ import numpy as np
 if __name__ == '__main__':
     new_data = Data()
     new_data.CombiningDataFrame()
-    #new_data.printIndexOfNullData()
-    #new_data.create_usable_data()
+    new_data.ACP()

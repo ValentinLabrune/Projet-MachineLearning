@@ -44,17 +44,9 @@ class Data:
         print("abc\n", usable_data)
         return usable_data
 
-    def ACP(self):
-        print("PERFORMING ACP")
-        pca = PCA(n_components=2)
-        principalComponents = pca.fit_transform(self.create_usable_data())
-        principalDf = pd.DataFrame(data=principalComponents, columns=['principal component 1', 'principal component 2'])
-        print(principalDf)
-        return principalDf
-
-    def replaceData(self):
-        #replace data by ACP data
-        print("REPLACING DATA BY ACP DATA")
-        self.combined_data = self.ACP()
-        print(self.combined_data)
-
+    def perform_pca(self, n_components):
+        pca = PCA(n_components=n_components)
+        pca.fit(self.create_usable_data())
+        pca_variance_ratio = pca.explained_variance_ratio_
+        pca_covariance = pca.get_covariance()
+        return pca, pca_variance_ratio, pca_covariance

@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import data as dt
@@ -6,31 +5,34 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 import seaborn as sns
 
-class AnalysData:
 
-    def __init__(self):
-        data = dt.Data()
-        data.CombiningDataFrame()
-        self.data = data
+def ACP(dataX):
+    pca = PCA(n_components=1)
+    principalComponents = pca.fit_transform(dataX)
+    principalDf = pd.DataFrame(data=principalComponents
+                               , columns=['principal component 1'])
+    return principalDf
 
-    def PCA_perf(self, n_components):
-        pca = PCA(n_components=n_components)
-        pca.fit(self.data)
-        transformed = pca.transform(self.data)
-        data = pd.DataFrame(transformed, columns=[f'PC{i}' for i in range(1, n_components + 1)])
-        print("type of data: ", type(data))
-        print("uazhegfiazoehgoazoebgoubazuoefva")
-        return data
 
-    def EDA(self):
+def showACP(dataX, dataY):
+    principalDf = ACP(dataX)
+    finalDf = pd.concat([principalDf, dataY], axis=1) #.sort_values(by=['principal component 1'])
+    plt.title("TARGET varie en fcontion de l'ACP")
+    plt.ylabel('TARGET')
+    plt.xlabel('ACP')
+    plt.plot(principalDf, dataY)
+    plt.show()
+    return finalDf
 
-        print("EDA for FR")
-        print("Summary Statistics")
-        print(self.data.describe())
-
-        print("Columns: ", self.data.columns)
-        print("Correlation Matrix")
-        coor_matrix = self.data.corr()
-        print(coor_matrix['TARGET'].sort_values(ascending=True))
-        sns.heatmap(coor_matrix, annot=True)
-        plt.show()
+def EDA(data):
+    print('----------------------------------------------------------------')
+    print("EDA")
+    print("Summary Statistics")
+    print(data.describe())
+    print("Columns: ", data.columns)
+    print("Correlation Matrix")
+    coor_matrix = data.corr()
+    print(coor_matrix['TARGET'].sort_values(ascending=True))
+    plt.title('Correlation Matrix')
+    sns.heatmap(coor_matrix, annot=True)
+    plt.show()

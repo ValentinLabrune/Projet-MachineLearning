@@ -1,60 +1,34 @@
 from data import *
 import numpy as np
 import data_analyse as da
-import regression_lineaire as rl
-from scipy.stats import spearmanr
-from sklearn.metrics import mean_squared_error
 
 # Press the green button in the gutter to run the script.
-class Main :
+X, Y, combined_data = da.dt.create_data()
 
-    def __init__(self):
-        self.dataFR = Data('FR')
-        self.dataDE = Data('DE')
-        self.dataFR = self.dataFR.create_usable_data()
-        self.dataDE = self.dataDE.create_usable_data()
-        self.dataNewFR = Data('FR')
-        self.dataNewDE = Data('DE')
-        self.dataNewFR = self.dataNewFR.create_usable_data()
-        self.dataNewDE = self.dataNewDE.create_usable_data()
+features = ['DE_CONSUMPTION', 'FR_CONSUMPTION', 'DE_FR_EXCHANGE',
+            'FR_DE_EXCHANGE', 'DE_NET_EXPORT', 'FR_NET_EXPORT', 'DE_NET_IMPORT',
+            'FR_NET_IMPORT', 'DE_GAS', 'FR_GAS', 'DE_COAL', 'FR_COAL', 'DE_HYDRO',
+            'FR_HYDRO', 'DE_NUCLEAR', 'FR_NUCLEAR', 'DE_SOLAR', 'FR_SOLAR',
+            'DE_WINDPOW', 'FR_WINDPOW', 'DE_LIGNITE', 'DE_RESIDUAL_LOAD',
+            'FR_RESIDUAL_LOAD', 'DE_RAIN', 'FR_RAIN', 'DE_WIND', 'FR_WIND',
+            'DE_TEMP', 'FR_TEMP', 'GAS_RET', 'COAL_RET', 'CARBON_RET']
 
-    def main(self):
-        dataTools = da.AnalysData(self.dataFR)
-        dataTools.EDA()
-        SimpleRegression = rl.SimpleRegression(self.dataFR)
-        X,y = SimpleRegression.slipXandY()
-        self.y = y
-        influenced_by =["FR_WINDPOW","DE_WINDPOW","DE_NET_IMPORT","DE_RESIDUAL_LOAD","DE_HYDRO"]
-        selected_cols = X.loc[:, influenced_by]
-        CPAofX = da.AnalysData(selected_cols)
-        X = CPAofX.PCA_perf(1)
-        SimpleRegFR = SimpleRegression.SimpleLinearRegression(X,y)
-
-        dataTools = da.AnalysData(self.dataDE)
-        dataTools.EDA()
-        SimpleRegression = rl.SimpleRegression(self.dataDE)
-        X,y = SimpleRegression.slipXandY()
-        self.y = y
-        influenced_by =["DE_RESIDUAL_LOAD","DE_NET_IMPORT","DE_GAS","DE_NET_EXPORT","DE_WINDPOW"]
-        selected_cols = X.loc[:, influenced_by]
-        CPAofX = da.AnalysData(selected_cols)
-        X = CPAofX.PCA_perf(1)
-
-        simpleRegDE = SimpleRegression.SimpleLinearRegression(X,y)
-        self.evaluate(SimpleRegFR)
+print("Setting combined data")
 
 
+#Remplir les données
+usable_data = replace_missing_values(combined_data)
+print("data : ", usable_data)
+# données standardisées :
 
+standardized_data, Y_data = create_standardized_data(usable_data)
 
-        return
+print(da.showACP(standardized_data, Y_data))
+da.showACP(standardized_data, Y_data)
+standardized_data_EDA = pd.concat([standardized_data, Y], axis = 1)
 
-    def evaluate(self,model):
-        y_pred = model.predict(self.dataNewFR)
-        spearman_corr, _ = spearmanr(self.y, y_pred)
-        rmse = mean_squared_error(self.y, y_pred, squared=False)
-        print("Spearman correlation coefficient:", spearman_corr)
-        print("RMSE:", rmse)
-        return spearman_corr, rmse
+da.EDA(standardized_data_EDA)
 
-
-Main().main()
+print("spliting data by country")
+combined_data_used_FR = da.dt.separating_data(combined_data, 'FR')
+combined_data_used_DE = da.dt.separating_data(combined_data, 'DE')

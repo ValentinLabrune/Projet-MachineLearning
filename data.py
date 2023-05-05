@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+import numpy as np
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -24,16 +25,32 @@ def replace_missing_values(data):
                 data.dropna(subset=[col], inplace=True)
     return data
 
+def suppressing_absurd_data(data):
+    abc = data.copy()
+    Q1 = np.percentile(abc['TARGET'], 25,
+                       interpolation='midpoint')
+
+    Q3 = np.percentile(abc['TARGET'], 75,
+                       interpolation='midpoint')
+    IQR = Q3 - Q1
+    print("Old Shape: ", abc.shape)
+    # Upper bound
+    upper = np.where(abc['TARGET'] >= (Q3 + 1.5 * IQR))
+    # Lower bound
+    lower = np.where(abc['TARGET'] <= (Q1 - 1.5 * IQR))
+    abc.drop(upper[0], inplace = True)
+    abc.drop(lower[0], inplace = True)
+    print("New Shape: ", abc.shape)
+    return abc
 
 def create_standardized_data(data):
     data = data.sort_values(by=['ID'])
     Y_data = data.loc[:, ['TARGET']]
     # Dropping useless data
-    usable_data = data.drop(['ID', 'COUNTRY', 'TARGET'], axis=1)
+    usable_data = data.drop(['ID', 'COUNTRY', 'DAY_ID', 'TARGET'], axis=1)
     # Standardize data
-    usable_data_X = usable_data.drop('DAY_ID', axis=1)
-    scaled_data = StandardScaler().fit_transform(usable_data_X)
-    scaled_data = pd.DataFrame(scaled_data, columns=usable_data_X.columns)
+    scaled_data = StandardScaler().fit_transform(usable_data)
+    scaled_data = pd.DataFrame(scaled_data, columns=usable_data.columns)
 
     return scaled_data, Y_data
 

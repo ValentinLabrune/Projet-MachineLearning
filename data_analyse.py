@@ -32,7 +32,7 @@ def EDA(data):
     print("Columns: ", data.columns)
     print("Correlation Matrix")
     coor_matrix = data.corr()
-    print(coor_matrix['TARGET'].sort_values(ascending=True))
+    print("azaza",abs(coor_matrix['TARGET'].sort_values(ascending=True)))
     plt.title('Correlation Matrix')
     sns.heatmap(coor_matrix, annot=True)
     plt.show()

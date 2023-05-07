@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from scipy.stats import spearmanr
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -30,21 +31,18 @@ def create_regression_data(dataX, dataY):
     return x_train, x_test, y_train, y_test
 
 def train_and_evaluate_by_model(model, x_train, x_test, y_train, y_test):
-    if model == RandomForestRegressor():
-        y_train = np.ravel(y_train)
+
     model.fit(x_train, y_train)
     y_test_prediction = model.predict(x_test)
 
-    r2 = r2_score(y_test, y_test_prediction)
-    spearman_corr = stats.spearmanr(y_test, y_test_prediction)[0]
     mse = mean_squared_error(y_test, y_test_prediction)
-    print(f"Score / training data: {round(model.score(x_train, y_train) * 100, 1)} %")
-    print(f"Score / test data: {round(model.score(x_test, y_test) * 100, 1)} %")
+    r2 = r2_score(y_test, y_test_prediction)
+    spearman_corr = spearmanr(y_test, y_test_prediction)[0]
+    print(f"  Score / training data: {round(model.score(x_train, y_train) * 100, 1)} %")
+    print(f"  Score / test data: {round(model.score(x_test, y_test) * 100, 1)} %")
 
     #print("y_test_prediction = \n", y_test_prediction)
     return r2, spearman_corr, mse
-
-
 
 def display_feat_imp_reg(reg):
     feat_imp_reg = reg.coef_[0]

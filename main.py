@@ -46,7 +46,7 @@ print("ShapeXtrain1", x_train1.shape, "ShapeXtest", x_test1.shape, "ShapeYtrain1
 models = [
     ('Linear Regression', LinearRegression()),
     ('Ridge Regression', Ridge()),
-    ('Lasso Regression', Lasso()),
+    ('Lasso Regression', Lasso(alpha = 0.4)),
     ('K-Nearest Neighbors', KNeighborsRegressor()),
     ('Decision Tree', DecisionTreeRegressor()),
     ('Random Forest', RandomForestRegressor())
@@ -55,8 +55,8 @@ models = [
 accuracy = []
 for name, model in models:
     print(f"{name}:")
-    mse, r2, spearman_corr = rl.train_and_evaluate_by_model(model, x_train1, x_test1, y_train1, y_test1)
-    accuracy.append((name, mse, r2, spearman_corr))
+    r2, spearman_corr, mse = rl.train_and_evaluate_by_model(model, x_train1, x_test1, y_train1, y_test1)
+    accuracy.append((name, r2, mse, spearman_corr))
     print(f"  R2: {r2:.4f}")
     print(f"  MSE: {mse:.4f}")
     print(f"  Spearman Correlation: {spearman_corr:.4f}\n")
@@ -64,7 +64,7 @@ for name, model in models:
         rl.display_feat_imp_reg(model)
 
 # Comparez les performances des modèles
-results_df = pd.DataFrame(accuracy, columns=['Model', 'MSE', 'R2', 'Spearman Correlation'])
+results_df = pd.DataFrame(accuracy, columns=['Model', 'R2', 'MSE', 'Spearman Correlation'])
 results_df = results_df.sort_values(by='R2', ascending=False)
 print("Performance ranking:")
 print(results_df)

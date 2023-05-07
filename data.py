@@ -44,15 +44,19 @@ def suppressing_absurd_data(data):
     return abc
 
 def create_standardized_data(data):
-    data = data.sort_values(by=['ID'])
+    data = data.sort_values(by=['DAY_ID'])
     Y_data = data.loc[:, ['TARGET']]
+    Y = pd.DataFrame(Y_data)
+    print("yshape", Y.shape)
     # Dropping useless data
     usable_data = data.drop(['ID', 'COUNTRY', 'DAY_ID', 'TARGET'], axis=1)
     # Standardize data
     scaled_data = StandardScaler().fit_transform(usable_data)
     scaled_data = pd.DataFrame(scaled_data, columns=usable_data.columns)
+    print(scaled_data.shape)
 
-    return scaled_data, Y_data
+
+    return scaled_data, Y
 
 def separating_data(combined_data, country):
     if country == 'FR':

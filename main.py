@@ -1,3 +1,5 @@
+from matplotlib import pyplot as plt
+
 from data import *
 import numpy as np
 import data_analyse as da
@@ -17,8 +19,8 @@ print("Setting combined data")
 #Remplir les données
 usable_data = replace_missing_values(combined_data)
 usable_data = suppressing_absurd_data(usable_data)
-print("abce")
-print("data : azezaezae ", usable_data)
+print("Usable data columns: ", usable_data.columns)
+print(usable_data.describe())
 # données standardisées :
 standardized_data, Y_data = create_standardized_data(usable_data)
 #print("données finales = ", standardized_data, Y_data)
@@ -26,7 +28,7 @@ standardized_data, Y_data = create_standardized_data(usable_data)
 da.showACP(standardized_data, Y_data)
 standardized_data_EDA = pd.concat([standardized_data, Y], axis = 1)
 
-da.EDA(standardized_data_EDA)
+
 
 print("spliting data by country")
 combined_data_used_FR = da.dt.separating_data(combined_data, 'FR')
@@ -68,6 +70,22 @@ results_df = pd.DataFrame(accuracy, columns=['Model', 'R2', 'MSE', 'Spearman Cor
 results_df = results_df.sort_values(by='R2', ascending=False)
 print("Performance ranking:")
 print(results_df)
+
+
+fig, ax = plt.subplots(figsize=(10, 6))
+bar_width = 0.25
+x = np.arange(len(results_df))
+
+ax.bar(x - bar_width, results_df['MSE'], width=bar_width, label='MSE')
+ax.bar(x, results_df['R2'], width=bar_width, label='R2')
+ax.bar(x + bar_width, results_df['Spearman Correlation'], width=bar_width, label='Spearman Correlation')
+
+ax.set_xticks(x)
+ax.set_xticklabels(results_df['Model'], rotation=45)
+ax.legend()
+
+plt.title("Performance Comparison")
+plt.show()
 
 #print(y_test_prediction)
 

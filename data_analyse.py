@@ -34,5 +34,6 @@ def EDA(data):
     coor_matrix = data.corr()
     print("azaza",abs(coor_matrix['TARGET'].sort_values(ascending=True)))
     plt.title('Correlation Matrix')
+    plt.figure(figsize=(24, 20))
     sns.heatmap(coor_matrix, annot=True)
     plt.show()

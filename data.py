@@ -49,7 +49,14 @@ def create_standardized_data(data):
     Y = pd.DataFrame(Y_data)
     print("yshape", Y.shape)
     # Dropping useless data
-    usable_data = data.drop(['ID', 'COUNTRY', 'DAY_ID', 'TARGET'], axis=1)
+    usable_data = data.drop(['ID', 'COUNTRY', 'DAY_ID'], axis=1)
+    coor = usable_data.corr()
+    print("coor", abs(coor['TARGET'].sort_values(ascending=True)))
+    for col in usable_data.columns:
+        if abs(coor[col]['TARGET']) < 0.08:
+            usable_data.drop(col, axis=1, inplace=True)
+
+    usable_data = usable_data.drop(['TARGET'], axis=1)
     # Standardize data
     scaled_data = StandardScaler().fit_transform(usable_data)
     scaled_data = pd.DataFrame(scaled_data, columns=usable_data.columns)
@@ -66,4 +73,3 @@ def separating_data(combined_data, country):
     print('DE : ')
     combined_dataDE = combined_data.loc[combined_data['COUNTRY'] == 'DE']
     return combined_dataDE
-

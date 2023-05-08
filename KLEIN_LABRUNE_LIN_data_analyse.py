@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import data as dt
+import KLEIN_LABRUNE_LIN_data as dt
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 import seaborn as sns

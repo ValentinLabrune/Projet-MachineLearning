@@ -1,9 +1,9 @@
 from matplotlib import pyplot as plt
 
-from data import *
+from KLEIN_LABRUNE_LIN_data import *
 import numpy as np
-import data_analyse as da
-import model as rl
+import KLEIN_LABRUNE_LIN_data_analyse as da
+import KLEIN_LABRUNE_LIN_model as rl
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor

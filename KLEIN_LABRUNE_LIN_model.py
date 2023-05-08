@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import Ridge
-import data as dt
+import KLEIN_LABRUNE_LIN_data as dt
 import matplotlib.pyplot as plt
 
 import seaborn as sns
@@ -63,7 +63,7 @@ def predict_data(data, x_train, y_train, ID):
     #Add the ID
     y_test_prediction = np.column_stack((ID, y_test_prediction))
     # ADD it in the csv
-    np.savetxt("données/prediction.csv", y_test_prediction, delimiter=",", fmt='%s')
+    np.savetxt("données/KLEIN_LABRUNE_LIN_prediction.csv", y_test_prediction, delimiter=",", fmt='%s')
     print("y_test_prediction columns : ", y_test_prediction.shape)
 
 

@@ -47,7 +47,7 @@ print("ShapeXtrain1", x_train1.shape, "ShapeXtest", x_test1.shape, "ShapeYtrain1
 models = [
     ('Linear Regression', LinearRegression()),
     ('Ridge Regression', Ridge(alpha=0.5)),
-    ('Lasso Regression', Lasso(alpha = 0.4)),
+    ('Lasso Regression', Lasso(alpha = 0.02)),
     ('K-Nearest Neighbors', KNeighborsRegressor()),
     ('Decision Tree', DecisionTreeRegressor(max_depth=5)),
     ('Random Forest', RandomForestRegressor(max_depth= 5))

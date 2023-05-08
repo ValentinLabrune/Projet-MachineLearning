@@ -31,9 +31,14 @@ def EDA(data):
     print(data.describe())
     print("Columns: ", data.columns)
     print("Correlation Matrix")
+    #Si la colonne country est de type string, FR :0, DE :
+    if data['COUNTRY'].dtype == 'object':
+        data['COUNTRY'] = data['COUNTRY'].replace(['FR', 'DE'], [0, 1])
+        data['COUNTRY'] = data['COUNTRY'].astype(int)
     coor_matrix = data.corr()
-    print("azaza",abs(coor_matrix['TARGET'].sort_values(ascending=True)))
+    print(coor_matrix['TARGET'].sort_values(ascending=True))
     plt.title('Correlation Matrix')
     plt.figure(figsize=(24, 20))
     sns.heatmap(coor_matrix, annot=True)
     plt.show()
+

@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 
 import data as dt
 import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
+
 import seaborn as sns
 
 from scipy import stats
@@ -31,6 +31,8 @@ def create_regression_data(dataX, dataY):
     return x_train, x_test, y_train, y_test
 
 def train_and_evaluate_by_model(model, x_train, x_test, y_train, y_test):
+
+    #Pca de x_train à l'aide
 
     model.fit(x_train, y_train)
     y_test_prediction = model.predict(x_test)

@@ -19,14 +19,13 @@ print("Setting combined data")
 #Remplir les données
 usable_data = replace_missing_values(combined_data)
 usable_data = suppressing_absurd_data(usable_data)
-print("Usable data columns: ", usable_data.columns)
-print(usable_data.describe())
+print("Usable data EDA")
+da.EDA(usable_data)
 # données standardisées :
 standardized_data, Y_data = create_standardized_data(usable_data)
 #print("données finales = ", standardized_data, Y_data)
 #print(da.showACP(standardized_data, Y_data))
-da.showACP(standardized_data, Y_data)
-standardized_data_EDA = pd.concat([standardized_data, Y], axis = 1)
+
 
 
 
@@ -50,7 +49,7 @@ models = [
     ('Ridge Regression', Ridge()),
     ('Lasso Regression', Lasso(alpha = 0.4)),
     ('K-Nearest Neighbors', KNeighborsRegressor()),
-    ('Decision Tree', DecisionTreeRegressor()),
+    ('Decision Tree', DecisionTreeRegressor(max_depth=10)),
     ('Random Forest', RandomForestRegressor())
 ]
 

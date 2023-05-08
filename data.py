@@ -47,17 +47,17 @@ def create_standardized_data(data):
     data = data.sort_values(by=['DAY_ID'])
     Y_data = data.loc[:, ['TARGET']]
     Y = pd.DataFrame(Y_data)
-    print("yshape", Y.shape)
     # Dropping useless data
-    usable_data = data.drop(['ID', 'COUNTRY', 'DAY_ID'], axis=1)
+    usable_data = data.drop(['ID', 'DAY_ID'], axis=1)
+    #Remplacer FR par 0 et DE par 1 dans la colonne COUNTRY
+    usable_data['COUNTRY'] = usable_data['COUNTRY'].replace(['FR', 'DE'], [0, 1])
     coor = usable_data.corr()
-    print("coor", abs(coor['TARGET'].sort_values(ascending=True)))
     for col in usable_data.columns:
-        if abs(coor[col]['TARGET']) < 0.08:
+        if abs(coor[col]['TARGET']) < 0.12:
             usable_data.drop(col, axis=1, inplace=True)
 
+    print("Usable data: ", usable_data.columns)
     usable_data = usable_data.drop(['TARGET'], axis=1)
-    # Standardize data
     scaled_data = StandardScaler().fit_transform(usable_data)
     scaled_data = pd.DataFrame(scaled_data, columns=usable_data.columns)
     print(scaled_data.shape)

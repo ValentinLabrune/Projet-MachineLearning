@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
 import data as dt
 import matplotlib.pyplot as plt
 
@@ -56,13 +56,15 @@ def display_feat_imp_reg(reg):
     plt.show()
 
 def predict_data(data, x_train, y_train, ID):
-    model = LinearRegression()
+    model = Ridge(alpha=0.5)
     model.fit(x_train, y_train)
-    y_test_prediction = model.predict(data.values.reshape(-1, len(x_train.columns))).ravel()
-    data_new_y = pd.DataFrame({'ID': ID, 'Y': y_test_prediction})
-    data_new_y.to_csv('DataNew_Y.csv', index=False, mode='a', header=not os.path.exists('DataNew_Y.csv'))
-    return y_test_prediction
-
+    y_test_prediction = model.predict(data)
+    print("y_test_prediction columns : ", y_test_prediction.shape)
+    #Add the ID
+    y_test_prediction = np.column_stack((ID, y_test_prediction))
+    # ADD it in the csv
+    np.savetxt("données/prediction.csv", y_test_prediction, delimiter=",", fmt='%s')
+    print("y_test_prediction columns : ", y_test_prediction.shape)
 
 
 

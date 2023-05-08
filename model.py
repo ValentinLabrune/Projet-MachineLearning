@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
@@ -6,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.ensemble import RandomForestRegressor
-
+from sklearn.linear_model import LinearRegression
 import data as dt
 import matplotlib.pyplot as plt
 
@@ -36,7 +38,6 @@ def train_and_evaluate_by_model(model, x_train, x_test, y_train, y_test):
 
     model.fit(x_train, y_train)
     y_test_prediction = model.predict(x_test)
-
     mse = mean_squared_error(y_test, y_test_prediction)
     r2 = r2_score(y_test, y_test_prediction)
     spearman_corr = spearmanr(y_test, y_test_prediction)[0]
@@ -53,4 +54,16 @@ def display_feat_imp_reg(reg):
     reg_feat_importance["Feature Importance"] = pd.Series(feat_imp_reg)
     reg_feat_importance.plot.barh(y="Feature Importance", x="Feature Name", title="Feature importance", color="red")
     plt.show()
+
+def predict_data(data, x_train, y_train, ID):
+    model = LinearRegression()
+    model.fit(x_train, y_train)
+    y_test_prediction = model.predict(data.values.reshape(-1, len(x_train.columns))).ravel()
+    data_new_y = pd.DataFrame({'ID': ID, 'Y': y_test_prediction})
+    data_new_y.to_csv('DataNew_Y.csv', index=False, mode='a', header=not os.path.exists('DataNew_Y.csv'))
+    return y_test_prediction
+
+
+
+
 

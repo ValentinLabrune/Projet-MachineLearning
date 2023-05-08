@@ -3,14 +3,14 @@ from matplotlib import pyplot as plt
 from data import *
 import numpy as np
 import data_analyse as da
-import regression_lineaire as rl
+import model as rl
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 
 # Press the green button in the gutter to run the script.
-X, Y, combined_data = da.dt.create_data()
+X, Y, combined_data, data_new = da.dt.create_data()
 #features = ['DE_CONSUMPTION', 'FR_CONSUMPTION', 'DE_FR_EXCHANGE','FR_DE_EXCHANGE', 'DE_NET_EXPORT', 'FR_NET_EXPORT', 'DE_NET_IMPORT','FR_NET_IMPORT', 'DE_GAS', 'FR_GAS', 'DE_COAL', 'FR_COAL', 'DE_HYDRO','FR_HYDRO', 'DE_NUCLEAR', 'FR_NUCLEAR', 'DE_SOLAR', 'FR_SOLAR','DE_WINDPOW', 'FR_WINDPOW', 'DE_LIGNITE', 'DE_RESIDUAL_LOAD','FR_RESIDUAL_LOAD', 'DE_RAIN', 'FR_RAIN', 'DE_WIND', 'FR_WIND','DE_TEMP', 'FR_TEMP', 'GAS_RET', 'COAL_RET', 'CARBON_RET']
 
 print("Setting combined data")
@@ -49,8 +49,8 @@ models = [
     ('Ridge Regression', Ridge()),
     ('Lasso Regression', Lasso(alpha = 0.4)),
     ('K-Nearest Neighbors', KNeighborsRegressor()),
-    ('Decision Tree', DecisionTreeRegressor(max_depth=10)),
-    ('Random Forest', RandomForestRegressor())
+    ('Decision Tree', DecisionTreeRegressor(max_depth=5)),
+    ('Random Forest', RandomForestRegressor(max_depth= 5))
 ]
 
 accuracy = []
@@ -66,7 +66,9 @@ for name, model in models:
 
 # Comparez les performances des modèles
 results_df = pd.DataFrame(accuracy, columns=['Model', 'R2', 'MSE', 'Spearman Correlation'])
-results_df = results_df.sort_values(by='R2', ascending=False)
+# Score is egal to (r2 - mse + spearman_corr) / 3
+results_df['Score'] = (results_df['R2'] - results_df['MSE'] + results_df['Spearman Correlation']) / 3
+results_df = results_df.sort_values(by='Score', ascending=False)
 print("Performance ranking:")
 print(results_df)
 
@@ -85,6 +87,18 @@ ax.legend()
 
 plt.title("Performance Comparison")
 plt.show()
+
+#Récupérer les ids
+data_new_ID = data_new['ID']
+usable_new_data = replace_missing_values(data_new)
+#Usable new_data only keeps the same columns as usable_data
+usable_new_data = usable_new_data[standardized_data.columns]
+#Standardize the new data
+standardized_new_data = create_standardized_data_new(usable_new_data)
+#Predict the values
+y_pred = rl.predict_data(standardized_new_data, x_train1, y_train1, data_new_ID)
+
+
 
 #print(y_test_prediction)
 

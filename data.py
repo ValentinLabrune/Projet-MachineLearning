@@ -9,8 +9,9 @@ pd.set_option('display.max_rows', None)
 def create_data():
     dataX = pd.read_csv('./Données/Data_X.csv')
     dataY = pd.read_csv('./Données/Data_Y.csv')
+    new_data_X = pd.read_csv('./Données/DataNew_X.csv')
     combined_data = pd.merge(dataX, dataY, on='ID')
-    return dataX, dataY, combined_data
+    return dataX, dataY, combined_data, new_data_X
 
 def replace_missing_values(data):
     threshold = 0.1
@@ -65,6 +66,15 @@ def create_standardized_data(data):
 
     return scaled_data, Y
 
+
+def create_standardized_data_new(data):
+    usable_data = data
+    print("Usable data: ", usable_data.columns)
+    scaled_data = StandardScaler().fit_transform(usable_data)
+    scaled_data = pd.DataFrame(scaled_data, columns=usable_data.columns)
+    print(scaled_data.shape)
+
+    return scaled_data
 def separating_data(combined_data, country):
     if country == 'FR':
         print('FR : ')
